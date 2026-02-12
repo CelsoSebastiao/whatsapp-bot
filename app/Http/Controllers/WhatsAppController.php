@@ -10,7 +10,7 @@ class WhatsAppController extends Controller
 {
     public function verify(Request $request)
     {
-        $verify_token = env('WHATSAPP_VERIFY_TOKEN');
+        $verify_token = config('services.whatsapp.verify_token');
         $mode = $request->input('hub_mode') ?? $request->input('hub.mode');
         $token = $request->input('hub_verify_token') ?? $request->input('hub.verify_token');
         $challenge = $request->input('hub_challenge') ?? $request->input('hub.challenge');
@@ -45,8 +45,8 @@ class WhatsAppController extends Controller
 
     private function sendMessage($to, $text)
     {
-        $token = env('WHATSAPP_TOKEN');
-        $phoneId = env('WHATSAPP_PHONE_ID');
+        $token = config('services.whatsapp.token');
+        $phoneId = config('services.whatsapp.phone_id');
 
         Http::withToken($token)->post(
             "https://graph.facebook.com/v18.0/{$phoneId}/messages",
