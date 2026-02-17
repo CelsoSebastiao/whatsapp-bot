@@ -1,5 +1,11 @@
 <?php
 use Illuminate\Support\Facades\Http;
+// routes/web.php
+Route::get('/rodar-migrate', function() {
+    Artisan::call('migrate', ['--force' => true]);
+    return "Migrations rodadas com sucesso!";
+});
+
 
 Route::get('/teste-whatsapp', function() {
     $token = env('WHATSAPP_TOKEN');
