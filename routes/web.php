@@ -11,7 +11,7 @@ Route::get('/rodar-migrate', function() {
 Route::get('/teste-whatsapp', function() {
     $token = env('WHATSAPP_TOKEN');
     $phoneId = env('WHATSAPP_PHONE_ID');
-    $numeroDestino = '258841509766'; // número real do destinatário
+    $numeroDestino = '+258841509766'; // número real do destinatário
 
     $response = Http::withHeaders([
         'Authorization' => 'Bearer ' . $token,
