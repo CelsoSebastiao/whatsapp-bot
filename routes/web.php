@@ -31,23 +31,51 @@ Route::get('/debug-db', function() {
     // Hide password
     $config['password'] = '********';
     
-    return response()->json([
-        'message' => 'Config loaded successfully. Connection NOT attempted.',
-        'config_focused' => $config,
-        'environment_vars' => [
-            'DB_ CONNECTION' => env('DB_CONNECTION'),
-            'DB_HOST' => env('DB_HOST'),
-            'DB_PORT' => env('DB_PORT'),
-            'DB_DATABASE' => env('DB_DATABASE'),
-            'DB_USERNAME' => env('DB_USERNAME'),
-            'DATABASE_URL' => env('DATABASE_URL'),
-            'APP_ENV' => env('APP_ENV'),
-        ],
-        'server_env' => [
-            // Check if actual server env vars are set
-            'DB_HOST' => $_SERVER['DB_HOST'] ?? $_ENV['DB_HOST'] ?? 'NOT_SET',
-        ]
-    ]);
+    $result = [
+        'message' => 'Attempting connection...',
+        'config_loaded' => $config,
+        'connection_status' => 'PENDING',
+        'error_message' => null,
+    ];
+
+    try {
+        DB::connection()->getPdo();
+        $result['connection_status'] = 'SUCCESS';
+        $result['database_name'] = DB::connection()->getDatabaseName();
+        $result['message'] = 'Connected successfully!';
+    } catch (\Exception $e) {
+        $result['connection_status'] = 'FAILED';
+        $result['error_message'] = $e->getMessage();
+        $result['message'] = 'Connection failed.';
+    }
+
+    return response()->json($result);
+});
+
+Route::get('/debug-db-2', function() {
+    $config = config('database.connections.pgsql');
+    // Hide password
+    $config['password'] = '********';
+    
+    $result = [
+        'message' => 'Attempting connection (v2)...',
+        'config_loaded' => $config,
+        'connection_status' => 'PENDING',
+        'error_message' => null,
+    ];
+
+    try {
+        DB::connection()->getPdo();
+        $result['connection_status'] = 'SUCCESS';
+        $result['database_name'] = DB::connection()->getDatabaseName();
+        $result['message'] = 'Connected successfully!';
+    } catch (\Exception $e) {
+        $result['connection_status'] = 'FAILED';
+        $result['error_message'] = $e->getMessage();
+        $result['message'] = 'Connection failed.';
+    }
+
+    return response()->json($result);
 });
 
 
