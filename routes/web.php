@@ -31,27 +31,23 @@ Route::get('/debug-db', function() {
     // Hide password
     $config['password'] = '********';
     
-    echo "<h1>Database Debug</h1>";
-    echo "<h2>Config (pgsql)</h2>";
-    dump($config);
-    
-    echo "<h2>Environment Variables</h2>";
-    dump([
-        'DB_CONNECTION' => env('DB_CONNECTION'),
-        'DB_HOST' => env('DB_HOST'),
-        'DB_PORT' => env('DB_PORT'),
-        'DB_DATABASE' => env('DB_DATABASE'),
-        'DB_USERNAME' => env('DB_USERNAME'),
-        'DATABASE_URL' => env('DATABASE_URL'),
+    return response()->json([
+        'message' => 'Config loaded successfully. Connection NOT attempted.',
+        'config_focused' => $config,
+        'environment_vars' => [
+            'DB_ CONNECTION' => env('DB_CONNECTION'),
+            'DB_HOST' => env('DB_HOST'),
+            'DB_PORT' => env('DB_PORT'),
+            'DB_DATABASE' => env('DB_DATABASE'),
+            'DB_USERNAME' => env('DB_USERNAME'),
+            'DATABASE_URL' => env('DATABASE_URL'),
+            'APP_ENV' => env('APP_ENV'),
+        ],
+        'server_env' => [
+            // Check if actual server env vars are set
+            'DB_HOST' => $_SERVER['DB_HOST'] ?? $_ENV['DB_HOST'] ?? 'NOT_SET',
+        ]
     ]);
-
-    echo "<h2>Connection Test</h2>";
-    try {
-        DB::connection()->getPdo();
-        return "Connected successfully to database: " . DB::connection()->getDatabaseName();
-    } catch (\Exception $e) {
-        return "Could not connect to the database.  Please check your configuration. error:" . $e->getMessage();
-    }
 });
 
 
